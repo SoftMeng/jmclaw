@@ -16,6 +16,7 @@ import { request as httpRequest, RequestOptions } from 'http';
 
 import { readEnvFile } from './env.js';
 import { logger } from './logger.js';
+import { PROXY_BIND_HOST } from './container-runtime.js';
 
 export type AuthMode = 'api-key' | 'oauth';
 
@@ -23,10 +24,7 @@ export interface ProxyConfig {
   authMode: AuthMode;
 }
 
-export function startCredentialProxy(
-  port: number,
-  host = '127.0.0.1',
-): Promise<Server> {
+export function startCredentialProxy(port: number): Promise<Server> {
   const secrets = readEnvFile([
     'ANTHROPIC_API_KEY',
     'CLAUDE_CODE_OAUTH_TOKEN',
@@ -43,6 +41,8 @@ export function startCredentialProxy(
   );
   const isHttps = upstreamUrl.protocol === 'https:';
   const makeRequest = isHttps ? httpsRequest : httpRequest;
+
+  const proxyBindHost = PROXY_BIND_HOST;
 
   return new Promise((resolve, reject) => {
     const server = createServer((req, res) => {
@@ -109,8 +109,11 @@ export function startCredentialProxy(
       });
     });
 
-    server.listen(port, host, () => {
-      logger.info({ port, host, authMode }, 'Credential proxy started');
+    server.listen(port, proxyBindHost, () => {
+      logger.info(
+        { port, host: proxyBindHost, authMode },
+        'Credential proxy started',
+      );
       resolve(server);
     });
 

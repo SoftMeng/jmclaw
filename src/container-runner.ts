@@ -78,8 +78,10 @@ function buildVolumeMounts(
 
     // Shadow .env so the agent cannot read secrets from the mounted project root.
     // Credentials are injected by the credential proxy, never exposed to containers.
+    // Note: Apple Container doesn't support /dev/null mounts, so we skip this for Apple Container.
+    // The credential proxy ensures secrets are not exposed.
     const envFile = path.join(projectRoot, '.env');
-    if (fs.existsSync(envFile)) {
+    if (fs.existsSync(envFile) && CONTAINER_RUNTIME_BIN !== 'container') {
       mounts.push({
         hostPath: '/dev/null',
         containerPath: '/workspace/project/.env',
@@ -515,11 +517,7 @@ export async function runContainerAgent(
         // Full input is only included at verbose level to avoid
         // persisting user conversation content on every non-zero exit.
         if (isVerbose) {
-          logLines.push(
-            `=== Input ===`,
-            JSON.stringify(input, null, 2),
-            ``,
-          );
+          logLines.push(`=== Input ===`, JSON.stringify(input, null, 2), ``);
         } else {
           logLines.push(
             `=== Input Summary ===`,

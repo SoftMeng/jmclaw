@@ -1,0 +1,343 @@
+{
+  "62": {
+    "inputs": {
+      "clip_name": "qwen_3_4b.safetensors",
+      "type": "lumina2",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "加载CLIP"
+    }
+  },
+  "63": {
+    "inputs": {
+      "vae_name": "ae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "加载VAE"
+    }
+  },
+  "65": {
+    "inputs": {
+      "samples": [
+        "79",
+        0
+      ],
+      "vae": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "66": {
+    "inputs": {
+      "unet_name": "z_image_bf16.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "67": {
+    "inputs": {
+      "text": [
+        "89",
+        0
+      ],
+      "clip": [
+        "62",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Positive Prompt)"
+    }
+  },
+  "68": {
+    "inputs": {
+      "width": "${宽}",
+      "height": "${高}",
+      "batch_size": 1
+    },
+    "class_type": "EmptySD3LatentImage",
+    "_meta": {
+      "title": "空Latent图像（SD3）"
+    }
+  },
+  "71": {
+    "inputs": {
+      "text": "低质量，模糊，扭曲，丑陋，多余的手指，变形的脸，不对称的眼睛，错位的牙齿，重复的纹理，嗓点，压缩伪影，水印，文字，边框，网格线，3D渲染，CG，渲染感，过度曝光，阴影过重，色彩失真，平面化，缺乏细节，简笔画，动作僵硬",
+      "clip": [
+        "62",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Negative Prompt)"
+    }
+  },
+  "76": {
+    "inputs": {
+      "output_path": "[time(%Y-%m-%d)]",
+      "filename_prefix": "OPEN",
+      "filename_delimiter": "_",
+      "filename_number_padding": 4,
+      "filename_number_start": "false",
+      "extension": "jpg",
+      "dpi": 300,
+      "quality": 92,
+      "optimize_image": "true",
+      "lossless_webp": "false",
+      "overwrite_mode": "false",
+      "show_history": "false",
+      "show_history_by_prefix": "false",
+      "embed_workflow": "true",
+      "show_previews": "true",
+      "images": [
+        "65",
+        0
+      ]
+    },
+    "class_type": "Image Save",
+    "_meta": {
+      "title": "Image Save"
+    }
+  },
+  "77": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": [
+        "82",
+        0
+      ],
+      "steps": 5,
+      "cfg": 1,
+      "sampler_name": "res_multistep",
+      "scheduler": "simple",
+      "start_at_step": 1,
+      "end_at_step": 4,
+      "return_with_leftover_noise": "enable",
+      "model": [
+        "95",
+        0
+      ],
+      "positive": [
+        "67",
+        0
+      ],
+      "negative": [
+        "71",
+        0
+      ],
+      "latent_image": [
+        "68",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "K采样器（高级）"
+    }
+  },
+  "78": {
+    "inputs": {
+      "unet_name": "星梦｜Z-Image｜造相｜FP16｜Realism_realism_fp16.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "UNet加载器"
+    }
+  },
+  "79": {
+    "inputs": {
+      "add_noise": "enable",
+      "noise_seed": [
+        "82",
+        0
+      ],
+      "steps": 9,
+      "cfg": 1,
+      "sampler_name": "sa_solver",
+      "scheduler": "sgm_uniform",
+      "start_at_step": 3,
+      "end_at_step": 9,
+      "return_with_leftover_noise": "disable",
+      "model": [
+        "86",
+        0
+      ],
+      "positive": [
+        "67",
+        0
+      ],
+      "negative": [
+        "71",
+        0
+      ],
+      "latent_image": [
+        "85",
+        0
+      ]
+    },
+    "class_type": "KSamplerAdvanced",
+    "_meta": {
+      "title": "K采样器（高级）"
+    }
+  },
+  "82": {
+    "inputs": {
+      "seed": "${种子}"
+    },
+    "class_type": "easy seed",
+    "_meta": {
+      "title": "随机种"
+    }
+  },
+  "85": {
+    "inputs": {
+      "mode": "bicubic",
+      "factor": 2,
+      "align": "true",
+      "samples": [
+        "77",
+        0
+      ]
+    },
+    "class_type": "Latent Upscale by Factor (WAS)",
+    "_meta": {
+      "title": "Latent Upscale by Factor (WAS)"
+    }
+  },
+  "86": {
+    "inputs": {
+      "lora_name": "nsfw_v1.safetensors",
+      "strength_model": 0.8,
+      "model": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "89": {
+    "inputs": {
+      "delimiter": ",",
+      "clean_whitespace": "true",
+      "text_a": [
+        "90",
+        0
+      ],
+      "text_b": [
+        "91",
+        0
+      ]
+    },
+    "class_type": "Text Concatenate",
+    "_meta": {
+      "title": "Text Concatenate"
+    }
+  },
+  "90": {
+    "inputs": {
+      "text": "<杰作，极高的美学评分>，三分线构图。"
+    },
+    "class_type": "Text Multiline",
+    "_meta": {
+      "title": "Text Multiline"
+    }
+  },
+  "91": {
+    "inputs": {
+      "text": "${提示词}"
+    },
+    "class_type": "Text Multiline",
+    "_meta": {
+      "title": "Text Multiline"
+    }
+  },
+  "93": {
+    "inputs": {
+      "lora_name": "zimagedistillr16/Z-Image-Fun-Lora-Distill-4-Steps-2603-ComfyUI_e98.safetensors",
+      "strength_model": 0.88,
+      "model": [
+        "66",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "95": {
+    "inputs": {
+      "lora_name": "zimagebase/HUAHUA_ZIMAGE_N109_25.safetensors",
+      "strength_model": 0.66,
+      "model": [
+        "93",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LoRA加载器（仅模型）"
+    }
+  },
+  "96": {
+    "inputs": {
+      "samples": [
+        "77",
+        0
+      ],
+      "vae": [
+        "63",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE解码"
+    }
+  },
+  "98": {
+    "inputs": {
+      "path": "output/[time(%Y-%m-%d)]",
+      "filename_prefix": "P",
+      "filename_delimiter": "_",
+      "filename_number_padding": 4,
+      "file_extension": ".txt",
+      "encoding": "utf-8",
+      "filename_suffix": "",
+      "text": [
+        "89",
+        0
+      ]
+    },
+    "class_type": "Save Text File",
+    "_meta": {
+      "title": "Save Text File"
+    }
+  },
+  "99": {
+    "inputs": {
+      "text": ""
+    },
+    "class_type": "Text Multiline",
+    "_meta": {
+      "title": "Text Multiline"
+    }
+  }
+}

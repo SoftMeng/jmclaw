@@ -1,4 +1,15 @@
-import { Client, Events, GatewayIntentBits, Message, TextChannel } from 'discord.js';
+import {
+  Client,
+  Events,
+  GatewayIntentBits,
+  Message,
+  TextChannel,
+} from 'discord.js';
+import { ProxyAgent } from 'undici';
+import type { Dispatcher } from 'undici';
+import { execSync } from 'child_process';
+import { existsSync } from 'fs';
+import path from 'path';
 
 import { ASSISTANT_NAME, TRIGGER_PATTERN } from '../config.js';
 import { readEnvFile } from '../env.js';
@@ -10,6 +21,88 @@ import {
   OnInboundMessage,
   RegisteredGroup,
 } from '../types.js';
+
+// Set up proxy if environment variable is set
+async function setupProxy(): Promise<void> {
+  const proxyUrl =
+    process.env.https_proxy || process.env.HTTPS_PROXY || process.env.ALL_PROXY;
+  if (proxyUrl) {
+    logger.info({ proxy: proxyUrl }, 'Discord will use proxy for REST API');
+  }
+}
+
+// Create a proxy dispatcher for discord.js REST (only for small API calls)
+// File uploads will be sent without proxy for better compatibility
+function createProxyDispatcher(): Dispatcher | undefined {
+  // Don't use proxy for REST - file uploads fail with HTTP proxy
+  return undefined;
+}
+
+// Create a proxy agent for fetch calls (attachment downloads)
+let proxyAgent: ProxyAgent | undefined;
+function getProxyAgent(): ProxyAgent | undefined {
+  if (proxyAgent) return proxyAgent;
+  const proxyUrl =
+    process.env.https_proxy || process.env.HTTPS_PROXY || process.env.ALL_PROXY;
+  if (!proxyUrl) return undefined;
+  try {
+    proxyAgent = new ProxyAgent(proxyUrl);
+    return proxyAgent;
+  } catch (err) {
+    logger.warn({ err }, 'Failed to create proxy agent for fetch');
+    return undefined;
+  }
+}
+
+// Handle image generation request - returns true if this is an image generation request
+// The agent will handle prompt optimization and ComfyUI generation
+function isImageGenerationRequest(content: string): boolean {
+  return (
+    content.includes('生成图片') ||
+    content.includes('画一张') ||
+    content.includes('画一幅')
+  );
+}
+
+// Send image file to Discord using curl with SOCKS5 proxy
+async function sendImageToDiscord(
+  imagePath: string,
+  channelId: string,
+): Promise<boolean> {
+  // Get token from environment or env file
+  const envVars = readEnvFile(['DISCORD_BOT_TOKEN']);
+  const botToken = process.env.DISCORD_BOT_TOKEN || envVars.DISCORD_BOT_TOKEN;
+
+  if (!botToken) {
+    console.log('[Discord] No bot token found');
+    return false;
+  }
+
+  try {
+    // Use curl with SOCKS5 proxy to upload the file
+    // Properly escape the header value
+    const authHeader = `Authorization: Bot ${botToken}`;
+    const payloadJson = '{"content":"🎨 图片已生成！"}';
+
+    const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F payload_json='${payloadJson}' https://discord.com/api/v10/channels/${channelId}/messages`;
+
+    console.log('[Discord] Uploading image via curl...');
+    const result = execSync(curlCmd, {
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: 60000,
+      encoding: 'utf-8',
+    });
+
+    console.log(
+      '[Discord] Image sent via curl, response:',
+      result.slice(0, 200),
+    );
+    return true;
+  } catch (err: any) {
+    console.log('[Discord] curl upload failed:', err.message);
+    return false;
+  }
+}
 
 export interface DiscordChannelOpts {
   onMessage: OnInboundMessage;
@@ -30,6 +123,10 @@ export class DiscordChannel implements Channel {
   }
 
   async connect(): Promise<void> {
+    await setupProxy();
+
+    const proxyDispatcher = createProxyDispatcher();
+
     this.client = new Client({
       intents: [
         GatewayIntentBits.Guilds,
@@ -37,14 +134,58 @@ export class DiscordChannel implements Channel {
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.DirectMessages,
       ],
+      rest: {
+        agent: proxyDispatcher,
+        timeout: 60000, // 60 second timeout for REST requests
+      } as any,
+    });
+
+    // Also log raw events for debugging
+    this.client.on('raw', (packet: any) => {
+      if (packet.t === 'MESSAGE_CREATE') {
+        console.log(
+          '[Discord Raw MESSAGE_CREATE]:',
+          packet.d.channel_id,
+          packet.d.author?.username,
+          packet.d.content?.slice(0, 30),
+        );
+      }
+    });
+
+    // Also log ALL raw events for debugging
+    this.client.on('raw', (packet: any) => {
+      console.log('[Discord Raw Event]:', packet.t, packet.d?.channel_id);
     });
 
     this.client.on(Events.MessageCreate, async (message: Message) => {
-      // Ignore bot messages (including own)
-      if (message.author.bot) return;
+      console.log(
+        '[Discord] Message received:',
+        message.content.slice(0, 50),
+        'from',
+        message.author.username,
+        'in channel',
+        message.channelId,
+      );
 
+      // Ignore bot messages (including own)
+      if (message.author.bot) {
+        console.log('[Discord] Ignoring bot message');
+        return;
+      }
+
+      // Check if this is an image generation request
+      // The agent will handle prompt optimization and ComfyUI generation
+      const isImageGen = isImageGenerationRequest(message.content);
+      if (isImageGen) {
+        console.log(
+          '[Discord] Image generation request detected, forwarding to agent',
+        );
+      }
+
+      // Forward message to agent - agent handles image generation including prompt optimization
       const channelId = message.channelId;
       const chatJid = `dc:${channelId}`;
+      console.log('[Discord] chatJid:', chatJid);
       let content = message.content;
       const timestamp = message.createdAt.toISOString();
       const senderName =
@@ -86,24 +227,70 @@ export class DiscordChannel implements Channel {
         }
       }
 
-      // Handle attachments — store placeholders so the agent knows something was sent
+      // Handle attachments — download text content and include it in the message
+      console.log(
+        '[Discord] Attachments:',
+        message.attachments.size,
+        [...message.attachments.values()].map((a) => ({
+          name: a.name,
+          type: a.contentType,
+          url: a.url,
+        })),
+      );
       if (message.attachments.size > 0) {
-        const attachmentDescriptions = [...message.attachments.values()].map((att) => {
+        for (const att of message.attachments.values()) {
           const contentType = att.contentType || '';
-          if (contentType.startsWith('image/')) {
-            return `[Image: ${att.name || 'image'}]`;
+          const name = att.name || 'file';
+
+          // For text files, download and include the content
+          if (
+            contentType.startsWith('text/') ||
+            name.endsWith('.txt') ||
+            name.endsWith('.md') ||
+            name.endsWith('.json') ||
+            name.endsWith('.log') ||
+            name.endsWith('.csv') ||
+            name.endsWith('.xml') ||
+            name.endsWith('.html') ||
+            name.endsWith('.css') ||
+            name.endsWith('.js') ||
+            name.endsWith('.ts')
+          ) {
+            console.log(
+              '[Discord] Downloading attachment:',
+              name,
+              att.url,
+              'proxyURL:',
+              att.proxyURL,
+            );
+            try {
+              // Discord attachments are public - use curl which handles SOCKS5 properly
+              const downloadUrl = att.proxyURL || att.url;
+              const { execSync } = require('child_process');
+              const curlCmd = `curl -s --proxy socks5://127.0.0.1:7890 "${downloadUrl}"`;
+              const textContent = execSync(curlCmd, {
+                maxBuffer: 10240 * 2,
+              }).toString();
+              // Include up to 10KB of text content
+              const truncated =
+                textContent.length > 10240
+                  ? textContent.slice(0, 10240) +
+                    '\n[...content truncated, file too long...]'
+                  : textContent;
+              content = `${content}\n\n[File: ${name}]\n\`\`\`\n${truncated}\n\`\`\``;
+            } catch (err) {
+              console.log('[Discord] Download error:', err);
+              content = `${content}\n[File: ${name} - could not read content]`;
+            }
+          } else if (contentType.startsWith('image/')) {
+            content = `${content}\n[Image: ${name}]`;
           } else if (contentType.startsWith('video/')) {
-            return `[Video: ${att.name || 'video'}]`;
+            content = `${content}\n[Video: ${name}]`;
           } else if (contentType.startsWith('audio/')) {
-            return `[Audio: ${att.name || 'audio'}]`;
+            content = `${content}\n[Audio: ${name}]`;
           } else {
-            return `[File: ${att.name || 'file'}]`;
+            content = `${content}\n[File: ${name}]`;
           }
-        });
-        if (content) {
-          content = `${content}\n${attachmentDescriptions.join('\n')}`;
-        } else {
-          content = attachmentDescriptions.join('\n');
         }
       }
 
@@ -125,14 +312,26 @@ export class DiscordChannel implements Channel {
 
       // Store chat metadata for discovery
       const isGroup = message.guild !== null;
-      this.opts.onChatMetadata(chatJid, timestamp, chatName, 'discord', isGroup);
+      this.opts.onChatMetadata(
+        chatJid,
+        timestamp,
+        chatName,
+        'discord',
+        isGroup,
+      );
 
       // Only deliver full message for registered groups
-      const group = this.opts.registeredGroups()[chatJid];
+      const registeredGroups = this.opts.registeredGroups();
+      console.log(
+        '[Discord] Registered groups:',
+        Object.keys(registeredGroups),
+      );
+      const group = registeredGroups[chatJid];
       if (!group) {
-        logger.debug(
-          { chatJid, chatName },
-          'Message from unregistered Discord channel',
+        console.log(
+          '[Discord] Message from unregistered channel:',
+          chatJid,
+          chatName,
         );
         return;
       }
@@ -155,7 +354,17 @@ export class DiscordChannel implements Channel {
     });
 
     // Handle errors gracefully
+    // Debug: track ALL events
+    this.client.on(Events.Debug, (msg) => {
+      console.log('[Discord Debug]:', msg.slice(0, 150));
+    });
+
+    this.client.on(Events.Warn, (msg) => {
+      console.log('[Discord Warn]:', msg);
+    });
+
     this.client.on(Events.Error, (err) => {
+      console.log('[Discord Error]:', err.message);
       logger.error({ err: err.message }, 'Discord client error');
     });
 
@@ -193,6 +402,22 @@ export class DiscordChannel implements Channel {
 
       const textChannel = channel as TextChannel;
 
+      // Check if text contains an image path from the agent
+      const imagePathMatch = text.match(/\/([^\/\s\n]+\.(jpg|png|jpeg))/);
+      const imagePath = imagePathMatch
+        ? `/Users/xiangyuanmeng/Documents/jmclaw/groups/discord_main/images/${imagePathMatch[1]}`
+        : null;
+
+      if (imagePath && existsSync(imagePath)) {
+        console.log('[Discord] Sending image:', imagePath);
+        // Send image via curl with SOCKS5 proxy
+        const success = await this.sendImageToChannel(imagePath, channelId);
+        if (success) {
+          console.log('[Discord] Image sent successfully');
+        }
+        // Also send the text message (may contain description)
+      }
+
       // Discord has a 2000 character limit per message — split if needed
       const MAX_LENGTH = 2000;
       if (text.length <= MAX_LENGTH) {
@@ -205,6 +430,41 @@ export class DiscordChannel implements Channel {
       logger.info({ jid, length: text.length }, 'Discord message sent');
     } catch (err) {
       logger.error({ jid, err }, 'Failed to send Discord message');
+    }
+  }
+
+  private async sendImageToChannel(
+    imagePath: string,
+    channelId: string,
+  ): Promise<boolean> {
+    try {
+      const envVars = readEnvFile(['DISCORD_BOT_TOKEN']);
+      const botToken =
+        process.env.DISCORD_BOT_TOKEN || envVars.DISCORD_BOT_TOKEN;
+
+      if (!botToken) {
+        console.log('[Discord] No bot token found');
+        return false;
+      }
+
+      const authHeader = `Authorization: Bot ${botToken}`;
+      const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json={"content":"🎨 图片已生成！"}' https://discord.com/api/v10/channels/${channelId}/messages`;
+
+      console.log('[Discord] Uploading image via curl...');
+      const result = execSync(curlCmd, {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 60000,
+        encoding: 'utf-8',
+      });
+
+      console.log(
+        '[Discord] Image sent via curl, response:',
+        result.slice(0, 200),
+      );
+      return true;
+    } catch (err: any) {
+      console.log('[Discord] curl upload failed:', err.message);
+      return false;
     }
   }
 

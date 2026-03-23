@@ -24,7 +24,6 @@ import {
 import {
   cleanupOrphans,
   ensureContainerRuntimeRunning,
-  PROXY_BIND_HOST,
 } from './container-runtime.js';
 import {
   getAllChats,
@@ -471,17 +470,19 @@ function ensureContainerSystemRunning(): void {
 }
 
 async function main(): Promise<void> {
+  console.log('[STARTUP] Starting main()');
   ensureContainerSystemRunning();
+  console.log('[STARTUP] Container system checked');
   initDatabase();
+  console.log('[STARTUP] Database initialized');
   logger.info('Database initialized');
   loadState();
+  console.log('[STARTUP] State loaded');
   restoreRemoteControl();
+  console.log('[STARTUP] Remote control restored');
 
   // Start credential proxy (containers route API calls through this)
-  const proxyServer = await startCredentialProxy(
-    CREDENTIAL_PROXY_PORT,
-    PROXY_BIND_HOST,
-  );
+  const proxyServer = await startCredentialProxy(CREDENTIAL_PROXY_PORT);
 
   // Graceful shutdown handlers
   const shutdown = async (signal: string) => {
