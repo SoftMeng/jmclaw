@@ -6,7 +6,18 @@ import { readEnvFile } from './env.js';
 // Read config values from .env (falls back to process.env).
 // Secrets (API keys, tokens) are NOT read here — they are loaded only
 // by the credential proxy (credential-proxy.ts), never exposed to containers.
-const envConfig = readEnvFile(['ASSISTANT_NAME', 'ASSISTANT_HAS_OWN_NUMBER']);
+const envConfig = readEnvFile([
+  'ASSISTANT_NAME',
+  'ASSISTANT_HAS_OWN_NUMBER',
+  'COMFYUI_MODE',
+  'COMFYUI_SERVER',
+  'COMFYUI_HOST_VM',
+  'COMFYUI_INTERNAL',
+  'COMFYUI_EXTERNAL',
+  'COMFYUI_WIDTH',
+  'COMFYUI_HEIGHT',
+  'SOCKS5_PROXY',
+]);
 
 export const ASSISTANT_NAME =
   process.env.ASSISTANT_NAME || envConfig.ASSISTANT_NAME || 'Andy';
@@ -15,6 +26,16 @@ export const ASSISTANT_HAS_OWN_NUMBER =
     envConfig.ASSISTANT_HAS_OWN_NUMBER) === 'true';
 export const POLL_INTERVAL = 2000;
 export const SCHEDULER_POLL_INTERVAL = 60000;
+
+// ComfyUI config
+export const COMFYUI_MODE = process.env.COMFYUI_MODE || envConfig.COMFYUI_MODE || 'internal';
+export const COMFYUI_SERVER = process.env.COMFYUI_SERVER || envConfig.COMFYUI_SERVER || '';
+export const COMFYUI_HOST_VM = process.env.COMFYUI_HOST_VM || envConfig.COMFYUI_HOST_VM || '192.168.64.1:7860';
+export const COMFYUI_INTERNAL = process.env.COMFYUI_INTERNAL || envConfig.COMFYUI_INTERNAL || '192.168.31.8:7860';
+export const COMFYUI_EXTERNAL = process.env.COMFYUI_EXTERNAL || envConfig.COMFYUI_EXTERNAL || '';
+export const COMFYUI_WIDTH = parseInt(process.env.COMFYUI_WIDTH || envConfig.COMFYUI_WIDTH || '512', 10);
+export const COMFYUI_HEIGHT = parseInt(process.env.COMFYUI_HEIGHT || envConfig.COMFYUI_HEIGHT || '1024', 10);
+export const SOCKS5_PROXY = process.env.SOCKS5_PROXY || envConfig.SOCKS5_PROXY || 'socks5://127.0.0.1:7890';
 
 // Absolute paths needed for container mounts
 const PROJECT_ROOT = process.cwd();

@@ -1,0 +1,298 @@
+[proxy-preload] WebSocket patched with SOCKS5 proxy
+[proxy-preload] Module._load interception enabled
+[proxy-preload] Proxy configuration complete
+[proxy-preload] Undici patched with HTTP proxy
+[proxy-preload] Undici patched with HTTP proxy
+[STARTUP] Starting main()
+[DEBUG] Container runtime already running
+{"count":2,"names":["nanoclaw-discord-main-1774333407746","nanoclaw-discord-main-1774333525756"]}
+[STARTUP] Container system checked
+[STARTUP] Database initialized
+Database initialized
+{"groupCount":1}
+[STARTUP] State loaded
+[STARTUP] Remote control restored
+(node:52419) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"port":3001,"host":"0.0.0.0","authMode":"oauth"}
+{"proxy":"socks5://127.0.0.1:7890"}
+[Discord Debug]: Provided token: MTQ4NDcxNTA0OTUxNDcwMDg1MQ.GKjFkk.**************************************
+[Discord Debug]: Preparing to connect to the gateway...
+[proxy-preload] WebSocket patched with SOCKS5 proxy
+[proxy-preload] Module._load interception enabled
+[proxy-preload] Proxy configuration complete
+[Discord Debug]: [WS => Manager] Fetched Gateway Information
+	URL: wss://gateway.discord.gg
+	Recommended Shards: 1
+[Discord Debug]: [WS => Manager] Session Limit Information
+	Total: 1000
+	Remaining: 982
+[Discord Debug]: [WS => Shard 0] Connecting to wss://gateway.discord.gg?v=10&encoding=json&compress=zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event hello for 60000ms
+[Discord Debug]: [WS => Shard 0] Preparing first heartbeat of the connection with a jitter of 0.37102559689438874; waiting 15304ms
+[Discord Debug]: [WS => Shard 0] Waiting for identify throttle
+[Discord Debug]: [WS => Shard 0] Identifying
+	shard id: 0
+	shard count: 1
+	intents: 37377
+	compression: zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event ready for 15000ms
+[Discord Raw Event]: READY undefined
+[Discord Raw Event]: GUILD_CREATE undefined
+[Discord Debug]: [WS => Shard 0] Shard received all its guilds. Marking as fully ready.
+{"username":"jmclaw#1682","id":"1484715049514700851"}
+
+  Discord bot: jmclaw#1682
+  Use /chatid command or check channel IDs in Discord settings
+
+[WARN] Telegram: TELEGRAM_BOT_TOKEN not set
+[WARN] {"channel":"telegram"}
+Scheduler loop started
+IPC watcher started (per-group namespaces)
+NanoClaw running (trigger: @jmclaw)
+[Discord Debug]: [WS => Shard 0] First heartbeat sent, starting to beat every 41250ms
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 294ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 587ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 681ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 598ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 303ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 311ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 446ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 377ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 318ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 294ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 624ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：优
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:00:01.889 [Discord] Message received from we2023_: "<@&1485881198227226627> 生成图片：优..."
+[Discord] Ignoring message - not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 305ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:00:43.744 [Discord] Message received from fsclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:00:44.583 [Discord] Message received from fsclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 352ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 316ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 588ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 316ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 421ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 613ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 349ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：优
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:05:36.944 [Discord] Message received from we2023_: "<@&1485881198227226627> 生成图片：优..."
+[Discord] Ignoring message - not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 356ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:06:06.357 [Discord] Message received from fsclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:06:07.675 [Discord] Message received from fsclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 1525ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 295ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 294ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 297ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 351ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 297ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 302ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 310ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 579ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:12:44.963 [Discord] Message received from we2023_: "<@&1485881198227226627> 生成图片：大..."
+[Discord] Ignoring message - not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:13:24.053 [Discord] Message received from fsclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:13:24.729 [Discord] Message received from fsclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 448ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 335ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 293ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 294ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:17:14.600 [Discord] Message received from we2023_: "<@&1485881198227226627> 生成图片：大..."
+[Discord] Ignoring message - not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 291ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:17:49.212 [Discord] Message received from fsclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:17:49.851 [Discord] Message received from fsclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 315ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 298ms.
+[Discord Debug]: [WS => Shard 0] The gateway closed with an unexpected code 1006, attempting to resume.
+[Discord Debug]: [WS => Shard 0] Destroying shard
+	Reason: none
+	Code: 1006
+	Recover: Resume
+[Discord Debug]: [WS => Shard 0] Connection status during destroy
+	Needs closing: false
+	Ready state: 3
+[Discord Debug]: [WS => Shard 0] Connecting to wss://gateway-us-east1-d.discord.gg?v=10&encoding=json&compress=zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event hello for 60000ms
+[Discord Debug]: [WS => Shard 0] Preparing first heartbeat of the connection with a jitter of 0.5269772674914286; waiting 21737ms
+[Discord Debug]: [WS => Shard 0] Resuming session
+	resume url: wss://gateway-us-east1-d.discord.gg
+	sequence: 14
+	shard id: 0
+[Discord Debug]: [WS => Shard 0] Resumed and replayed 1 events
+[Discord Raw Event]: RESUMED undefined
+[Discord Debug]: [WS => Shard 0] First heartbeat sent, starting to beat every 41250ms
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 842ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 281ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 593ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 285ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 570ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 1279ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 357ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 284ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 394ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 291ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 285ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 299ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 289ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 289ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 307ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 430ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 291ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:33:07.366 [Discord] Message received from we2023_: "<@&1485881198227226627> 生成图片：大..."
+[Discord] Ignoring message - not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 303ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 285ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 383ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 288ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 291ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 299ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 285ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 299ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485251199086104629> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:38:48.702 [Discord] Message received from we2023_: "<@&1485251199086104629> 生成图片：大..."
+[Discord] Image generation request detected (with @mention), forwarding to agent
+[Discord] chatJid: dc:1484747023243677939
+[Discord] Attachments: 0 []
+[Discord] Registered groups: [ 'dc:1484747023243677939' ]
+{"chatJid":"dc:1484747023243677939","chatName":"Jmclaw #常规","sender":"we2023"}
+{"count":1}
+[DEBUG] {"groupJid":"dc:1484747023243677939","reason":"messages","activeCount":1}
+{"group":"Discord #general","messageCount":1}
+[DEBUG] {"group":"Discord #general","containerName":"nanoclaw-discord-main-1774337930451","mounts":["/Users/xiangyuanmeng/Documents/clawpool/jmclaw -> /workspace/project (ro)","/Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main -> /workspace/group","/Users/xiangyuanmeng/.claude/sessions -> /home/node/.claude/sessions","/Users/xiangyuanmeng/.claude/session-env -> /home/node/.claude/session-env","/Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/sessions/discord_main/.claude -> /home/node/.claude","/Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/ipc/discord_main -> /workspace/ipc","/Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/sessions/discord_main/agent-runner-src -> /app/src"],"containerArgs":"run -i --rm --name nanoclaw-discord-main-1774337930451 -e TZ=Asia/Shanghai -e ANTHROPIC_BASE_URL=http://192.168.64.1:3001 -e COMFYUI_MODE=internal -e COMFYUI_HOST_VM=192.168.50.8:7860 -e COMFYUI_INTERNAL=192.168.31.8:7860 -e COMFYUI_EXTERNAL=123.56.194.98:7860 -e COMFYUI_WIDTH=512 -e COMFYUI_HEIGHT=1024 -e CLAUDE_CODE_OAUTH_TOKEN=placeholder -e RUN_UID=501 -e RUN_GID=20 -e HOME=/home/node --mount type=bind,source=/Users/xiangyuanmeng/Documents/clawpool/jmclaw,target=/workspace/project,readonly -v /Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main:/workspace/group -v /Users/xiangyuanmeng/.claude/sessions:/home/node/.claude/sessions -v /Users/xiangyuanmeng/.claude/session-env:/home/node/.claude/session-env -v /Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/sessions/discord_main/.claude:/home/node/.claude -v /Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/ipc/discord_main:/workspace/ipc -v /Users/xiangyuanmeng/Documents/clawpool/jmclaw/data/sessions/discord_main/agent-runner-src:/app/src nanoclaw-agent:latest"}
+{"group":"Discord #general","containerName":"nanoclaw-discord-main-1774337930451","mountCount":7,"isMain":true}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 292ms.
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+{"group":"Discord #general"}
+[TIMING] 07:39:55.037 [Discord] sendMessage() called for dc:1484747023243677939, text length: 62
+[TIMING] 07:39:55.038 [Discord] Image path detected: /Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main/images/1774337987414.jpg
+[Discord] Sending image: /Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main/images/1774337987414.jpg
+[TIMING] 07:39:55.038 [Discord] Starting image upload to channel 1484747023243677939
+[Discord] Uploading image via curl...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0 93  616k    0     0   93  575k      0   517k  0:00:01  0:00:01 --:--:--  517k100  616k    0     0  100  616k      0   272k  0:00:02  0:00:02 --:--:--  272k100  618k    0  1318  100  616k    514   240k  0:00:02  0:00:02 --:--:--  241k
+[TIMING] 07:39:57.642 [Discord] curl upload completed (+2603ms)
+[Discord] Image sent via curl, response: {"type":0,"content":"\ud83c\udfa8 \u56fe\u7247\u5df2\u751f\u6210\uff01","mentions":[],"mention_roles":[],"attachments":[{"id":"1485906000627105952","filename":"1774337987414.jpg","size":631273,"url":"
+[TIMING] 07:39:57.642 [Discord] Total image upload time (+2604ms)
+[TIMING] 07:39:57.642 [Discord] Image upload completed (+2604ms)
+[Discord] Image sent successfully
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 2785ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:39:57.650 [Discord] Message received from jmclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:39:58.224 [Discord] Message received from jmclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[TIMING] 07:39:58.263 [Discord] Message sent (62 chars) (+3226ms)
+{"jid":"dc:1484747023243677939","length":62}
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 282ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 563ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 373ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485251199086104629> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:43:29.810 [Discord] Message received from we2023_: "<@&1485251199086104629> 生成图片：大..."
+[Discord] Image generation request detected (with @mention), forwarding to agent
+[Discord] chatJid: dc:1484747023243677939
+[Discord] Attachments: 0 []
+[Discord] Registered groups: [ 'dc:1484747023243677939' ]
+{"chatJid":"dc:1484747023243677939","chatName":"Jmclaw #常规","sender":"we2023"}
+{"count":1}
+[DEBUG] {"chatJid":"dc:1484747023243677939","count":1}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+{"group":"Discord #general"}
+[TIMING] 07:43:51.454 [Discord] sendMessage() called for dc:1484747023243677939, text length: 62
+[TIMING] 07:43:51.458 [Discord] Image path detected: /Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main/images/1774338228478.jpg
+[Discord] Sending image: /Users/xiangyuanmeng/Documents/clawpool/jmclaw/groups/discord_main/images/1774338228478.jpg
+[TIMING] 07:43:51.458 [Discord] Starting image upload to channel 1484747023243677939
+[Discord] Uploading image via curl...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  826k    0     0  100  826k      0   322k  0:00:02  0:00:02 --:--:--  322k100  826k    0     0  100  826k      0   231k  0:00:03  0:00:03 --:--:--  231k100  826k    0     0  100  826k      0   180k  0:00:04  0:00:04 --:--:--  180k100  828k    0  1318  100  826k    273   171k  0:00:04  0:00:04 --:--:--  171k100  828k    0  1318  100  826k    254   159k  0:00:05  0:00:05 --:--:--  183k
+[TIMING] 07:43:56.700 [Discord] curl upload completed (+5240ms)
+[Discord] Image sent via curl, response: {"type":0,"content":"\ud83c\udfa8 \u56fe\u7247\u5df2\u751f\u6210\uff01","mentions":[],"mention_roles":[],"attachments":[{"id":"1485906992361897984","filename":"1774338228478.jpg","size":846293,"url":"
+[TIMING] 07:43:56.700 [Discord] Total image upload time (+5242ms)
+[TIMING] 07:43:56.700 [Discord] Image upload completed (+5242ms)
+[Discord] Image sent successfully
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[DEBUG] {"container":"discord_main"}
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:43:56.745 [Discord] Message received from jmclaw: "🎨 图片已生成！..."
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[TIMING] 07:43:57.293 [Discord] Message received from jmclaw: "<@1075664329174679583> 🎨 图片已生..."
+[Discord] Ignoring bot message - not mentioned
+[TIMING] 07:43:57.341 [Discord] Message sent (62 chars) (+5887ms)
+{"jid":"dc:1484747023243677939","length":62}
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 281ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 287ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 286ms.

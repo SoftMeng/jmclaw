@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const logFile = '/tmp/nanoclaw.log';
+const logFile = '/tmp/jmclaw.log';
 const file = fs.openSync(logFile, 'a');
 
 function write(str: string) {

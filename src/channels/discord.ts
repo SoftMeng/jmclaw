@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import path from 'path';
 
-import { ASSISTANT_NAME, TRIGGER_PATTERN } from '../config.js';
+import { ASSISTANT_NAME, TRIGGER_PATTERN, GROUPS_DIR } from '../config.js';
 import { readEnvFile } from '../env.js';
 import { logger } from '../logger.js';
 import { registerChannel, ChannelOpts } from './registry.js';
@@ -22,6 +22,13 @@ import {
   RegisteredGroup,
 } from '../types.js';
 
+// Get SOCKS5 proxy URL from environment
+function getSocks5Proxy(): string {
+  return process.env.SOCKS5_PROXY ||
+         (process.env.https_proxy?.startsWith('socks5://') ? process.env.https_proxy : undefined) ||
+         'socks5://127.0.0.1:7890';
+}
+
 // Set up proxy if environment variable is set
 async function setupProxy(): Promise<void> {
   const proxyUrl =
@@ -29,6 +36,17 @@ async function setupProxy(): Promise<void> {
   if (proxyUrl) {
     logger.info({ proxy: proxyUrl }, 'Discord will use proxy for REST API');
   }
+}
+
+// Timing helper
+function getTimestamp(): string {
+  return new Date().toISOString().split('T')[1].slice(0, 12);
+}
+function logTime(label: string, startTime?: number): { label: string; elapsed?: number } {
+  const now = Date.now();
+  const elapsed = startTime ? now - startTime : 0;
+  console.log(`[TIMING] ${getTimestamp()} ${label}${elapsed > 0 ? ` (+${elapsed}ms)` : ''}`);
+  return { label, elapsed };
 }
 
 // Create a proxy dispatcher for discord.js REST (only for small API calls)
@@ -55,13 +73,21 @@ function getProxyAgent(): ProxyAgent | undefined {
 }
 
 // Handle image generation request - returns true if this is an image generation request
-// The agent will handle prompt optimization and ComfyUI generation
-function isImageGenerationRequest(content: string): boolean {
-  return (
+// Only triggers when @jmclaw is mentioned in the message
+function isImageGenerationRequest(
+  content: string,
+  botId: string,
+): boolean {
+  // Check if bot is mentioned (both <@ID> and <@!ID> formats)
+  const hasMention = content.includes(`<@${botId}>`) || content.includes(`<@!${botId}>`);
+
+  // Check for image generation keywords
+  const hasImageKeyword =
     content.includes('生成图片') ||
     content.includes('画一张') ||
-    content.includes('画一幅')
-  );
+    content.includes('画一幅');
+
+  return hasMention && hasImageKeyword;
 }
 
 // Send image file to Discord using curl with SOCKS5 proxy
@@ -80,11 +106,12 @@ async function sendImageToDiscord(
 
   try {
     // Use curl with SOCKS5 proxy to upload the file
-    // Properly escape the header value
+    // Image caption should NOT include mention - mention will be in the follow-up text message
     const authHeader = `Authorization: Bot ${botToken}`;
-    const payloadJson = '{"content":"🎨 图片已生成！"}';
+    const imageMessage = '🎨 图片已生成！';
+    const payloadJson = JSON.stringify({ content: imageMessage });
 
-    const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F payload_json='${payloadJson}' https://discord.com/api/v10/channels/${channelId}/messages`;
+    const curlCmd = `curl --socks5 ${getSocks5Proxy()} -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json=${payloadJson}' https://discord.com/api/v10/channels/${channelId}/messages`;
 
     console.log('[Discord] Uploading image via curl...');
     const result = execSync(curlCmd, {
@@ -116,6 +143,8 @@ export class DiscordChannel implements Channel {
   private client: Client | null = null;
   private opts: DiscordChannelOpts;
   private botToken: string;
+  // Track the user to reply to for each channel (most recent mention)
+  private pendingReplyTo: Map<string, { id: string; name: string }> = new Map();
 
   constructor(botToken: string, opts: DiscordChannelOpts) {
     this.botToken = botToken;
@@ -158,27 +187,61 @@ export class DiscordChannel implements Channel {
     });
 
     this.client.on(Events.MessageCreate, async (message: Message) => {
-      console.log(
-        '[Discord] Message received:',
-        message.content.slice(0, 50),
-        'from',
-        message.author.username,
-        'in channel',
-        message.channelId,
-      );
+      const msgStartTime = Date.now();
+      logTime(`[Discord] Message received from ${message.author.username}: "${message.content.slice(0, 30)}..."`);
 
-      // Ignore bot messages (including own)
-      if (message.author.bot) {
-        console.log('[Discord] Ignoring bot message');
+      // Check if this is a DM (no guild) or if bot is mentioned
+      const isDM = message.guild === null;
+      const botId = this.client?.user?.id || '';
+      const botUsername = this.client?.user?.username?.toLowerCase() || '';
+
+      // Check if bot is mentioned (user format: <@ID> or <@!ID>)
+      const isUserMentioned =
+        message.mentions.has(botId) ||
+        message.content.includes(`<@${botId}>`) ||
+        message.content.includes(`<@!${botId}>`);
+
+      // Check if bot's username is mentioned (e.g., "@jmclaw" in text)
+      const isUsernameMentioned = new RegExp(`@${botUsername}\\b`, 'i').test(message.content);
+
+      // Check if bot is in a mentioned role
+      const botRoleIds = new Set(message.member?.roles.cache.map(r => r.id) || []);
+      const mentionedRoleIds = [...message.mentions.roles.keys()];
+      const isInMentionedRole = mentionedRoleIds.some(roleId => botRoleIds.has(roleId));
+
+      const isBotMentioned = isUserMentioned || isUsernameMentioned || isInMentionedRole;
+
+      // Ignore bot messages (including own) UNLESS the bot is mentioned
+      // This allows other bots to trigger jmclaw by mentioning it
+      if (message.author.bot && !isBotMentioned) {
+        console.log('[Discord] Ignoring bot message - not mentioned');
         return;
       }
 
-      // Check if this is an image generation request
-      // The agent will handle prompt optimization and ComfyUI generation
-      const isImageGen = isImageGenerationRequest(message.content);
+      // Only process if mentioned (in guilds) or it's a DM
+      if (!isDM && !isBotMentioned) {
+        console.log('[Discord] Ignoring message - not mentioned and not a DM');
+        return;
+      }
+
+      // Store sender info for reply
+      const senderId = message.author.id;
+      const senderDisplayName =
+        message.member?.displayName ||
+        message.author.displayName ||
+        message.author.username;
+      this.pendingReplyTo.set(message.channelId, { id: senderId, name: senderDisplayName });
+
+      // Check if this is an image generation request (must include @mention)
+      const isImageGen =
+        isBotMentioned &&
+        (message.content.includes('生成图片') ||
+          message.content.includes('画一张') ||
+          message.content.includes('画一幅'));
+
       if (isImageGen) {
         console.log(
-          '[Discord] Image generation request detected, forwarding to agent',
+          '[Discord] Image generation request detected (with @mention), forwarding to agent',
         );
       }
 
@@ -267,7 +330,7 @@ export class DiscordChannel implements Channel {
               // Discord attachments are public - use curl which handles SOCKS5 properly
               const downloadUrl = att.proxyURL || att.url;
               const { execSync } = require('child_process');
-              const curlCmd = `curl -s --proxy socks5://127.0.0.1:7890 "${downloadUrl}"`;
+              const curlCmd = `curl -s --proxy ${getSocks5Proxy()} "${downloadUrl}"`;
               const textContent = execSync(curlCmd, {
                 maxBuffer: 10240 * 2,
               }).toString();
@@ -386,6 +449,9 @@ export class DiscordChannel implements Channel {
   }
 
   async sendMessage(jid: string, text: string): Promise<void> {
+    const sendStartTime = Date.now();
+    logTime(`[Discord] sendMessage() called for ${jid}, text length: ${text.length}`);
+
     if (!this.client) {
       logger.warn('Discord client not initialized');
       return;
@@ -402,31 +468,58 @@ export class DiscordChannel implements Channel {
 
       const textChannel = channel as TextChannel;
 
+      // Get the user to reply to and prepend @mention
+      const replyTo = this.pendingReplyTo.get(channelId);
+      let mentionPrefix = '';
+      if (replyTo) {
+        mentionPrefix = `<@${replyTo.id}> `;
+      }
+
       // Check if text contains an image path from the agent
-      const imagePathMatch = text.match(/\/([^\/\s\n]+\.(jpg|png|jpeg))/);
-      const imagePath = imagePathMatch
-        ? `/Users/xiangyuanmeng/Documents/jmclaw/groups/discord_main/images/${imagePathMatch[1]}`
-        : null;
+      // Match /workspace/group/images/xxx.jpg format and convert to host path
+      const imagePathMatch = text.match(/\/workspace\/group\/images\/([^\/\s\n]+\.(?:jpg|png|jpeg))/);
+      let imagePath: string | null = null;
+      if (imagePathMatch) {
+        // Get group folder from registered groups (jid -> folder mapping)
+        const folder = this.getGroupFolderFromJid(jid);
+        if (folder) {
+          imagePath = path.join(GROUPS_DIR, folder, 'images', imagePathMatch[1]);
+        }
+      }
 
       if (imagePath && existsSync(imagePath)) {
+        logTime(`[Discord] Image path detected: ${imagePath}`);
         console.log('[Discord] Sending image:', imagePath);
-        // Send image via curl with SOCKS5 proxy
+        const imgStartTime = Date.now();
+        // Send image via curl with SOCKS5 proxy, include mention if available
         const success = await this.sendImageToChannel(imagePath, channelId);
+        logTime(`[Discord] Image upload completed`, imgStartTime);
         if (success) {
           console.log('[Discord] Image sent successfully');
+        }
+        // Clean up after sending (only if image was sent successfully)
+        if (replyTo) {
+          this.pendingReplyTo.delete(channelId);
         }
         // Also send the text message (may contain description)
       }
 
       // Discord has a 2000 character limit per message — split if needed
       const MAX_LENGTH = 2000;
-      if (text.length <= MAX_LENGTH) {
-        await textChannel.send(text);
+      const fullText = mentionPrefix + text;
+      if (fullText.length <= MAX_LENGTH) {
+        await textChannel.send(fullText);
       } else {
-        for (let i = 0; i < text.length; i += MAX_LENGTH) {
-          await textChannel.send(text.slice(i, i + MAX_LENGTH));
+        // If mention prefix causes overflow, skip it
+        if (text.length <= MAX_LENGTH) {
+          await textChannel.send(text);
+        } else {
+          for (let i = 0; i < text.length; i += MAX_LENGTH) {
+            await textChannel.send(text.slice(i, i + MAX_LENGTH));
+          }
         }
       }
+      logTime(`[Discord] Message sent (${text.length} chars)`, sendStartTime);
       logger.info({ jid, length: text.length }, 'Discord message sent');
     } catch (err) {
       logger.error({ jid, err }, 'Failed to send Discord message');
@@ -437,6 +530,9 @@ export class DiscordChannel implements Channel {
     imagePath: string,
     channelId: string,
   ): Promise<boolean> {
+    const uploadStartTime = Date.now();
+    logTime(`[Discord] Starting image upload to channel ${channelId}`);
+
     try {
       const envVars = readEnvFile(['DISCORD_BOT_TOKEN']);
       const botToken =
@@ -448,19 +544,25 @@ export class DiscordChannel implements Channel {
       }
 
       const authHeader = `Authorization: Bot ${botToken}`;
-      const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json={"content":"🎨 图片已生成！"}' https://discord.com/api/v10/channels/${channelId}/messages`;
+      // Image caption should NOT include mention - mention will be in the follow-up text message
+      const imageMessage = '🎨 图片已生成！';
+      const payloadJson = JSON.stringify({ content: imageMessage });
+      const curlCmd = `curl --socks5 ${getSocks5Proxy()} -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json=${payloadJson}' https://discord.com/api/v10/channels/${channelId}/messages`;
 
       console.log('[Discord] Uploading image via curl...');
+      const curlStart = Date.now();
       const result = execSync(curlCmd, {
         maxBuffer: 10 * 1024 * 1024,
         timeout: 60000,
         encoding: 'utf-8',
       });
+      logTime(`[Discord] curl upload completed`, curlStart);
 
       console.log(
         '[Discord] Image sent via curl, response:',
         result.slice(0, 200),
       );
+      logTime(`[Discord] Total image upload time`, uploadStartTime);
       return true;
     } catch (err: any) {
       console.log('[Discord] curl upload failed:', err.message);
@@ -495,6 +597,14 @@ export class DiscordChannel implements Channel {
     } catch (err) {
       logger.debug({ jid, err }, 'Failed to send Discord typing indicator');
     }
+  }
+
+  // Get group folder from jid using registeredGroups from ChannelOpts
+  private getGroupFolderFromJid(jid: string): string | null {
+    // registeredGroups is a function that returns Record<string, RegisteredGroup>
+    const registeredGroups = this.opts.registeredGroups();
+    const registered = registeredGroups[jid];
+    return registered?.folder || null;
   }
 }
 

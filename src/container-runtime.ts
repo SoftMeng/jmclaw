@@ -30,7 +30,12 @@ function detectContainerGateway(): string {
   // bridge gateway, which is the host machine. We detect this by checking for
   // bridge100 and using its IP, or by detecting Apple Container runtime.
   if (os.platform() === 'darwin' && CONTAINER_RUNTIME_BIN === 'container') {
-    return detectBridgeIP() || 'host.docker.internal';
+    const bridgeIP = detectBridgeIP();
+    if (bridgeIP) return bridgeIP;
+    // Fallback: try to get host's LAN IP that containers can reach
+    const lanIP = detectHostLANIP();
+    if (lanIP) return lanIP;
+    return 'host.docker.internal';
   }
   // Docker Desktop (macOS/Linux): containers can reach host via host.docker.internal
   return 'host.docker.internal';
@@ -45,6 +50,21 @@ function detectBridgeIP(): string | undefined {
       const ipv4 = bridge.find((a) => a.family === 'IPv4');
       if (ipv4) return ipv4.address;
     }
+  } catch {
+    // Ignore errors
+  }
+  return undefined;
+}
+
+function detectHostLANIP(): string | undefined {
+  // Fallback: use ifconfig to get the host's LAN IP (non-loopback, non-internal)
+  try {
+    const output = execSync(
+      'ifconfig 2>/dev/null | grep -E "^[[:space:]]+inet " | grep -v "127\\." | head -1',
+      { encoding: 'utf-8', timeout: 5000 },
+    );
+    const match = output.match(/(\d+\.\d+\.\d+\.\d+)/);
+    if (match) return match[1];
   } catch {
     // Ignore errors
   }

@@ -4,6 +4,7 @@
  */
 import { ChildProcess, exec, spawn } from 'child_process';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 import {
@@ -15,6 +16,13 @@ import {
   GROUPS_DIR,
   IDLE_TIMEOUT,
   TIMEZONE,
+  COMFYUI_MODE,
+  COMFYUI_SERVER,
+  COMFYUI_HOST_VM,
+  COMFYUI_INTERNAL,
+  COMFYUI_EXTERNAL,
+  COMFYUI_WIDTH,
+  COMFYUI_HEIGHT,
 } from './config.js';
 import { resolveGroupFolderPath, resolveGroupIpcPath } from './group-folder.js';
 import { logger } from './logger.js';
@@ -159,6 +167,27 @@ function buildVolumeMounts(
       fs.cpSync(srcDir, dstDir, { recursive: true });
     }
   }
+  // Also mount host's ~/.claude/sessions/ for session persistence
+  const hostHomeClaude = os.homedir() + '/.claude';
+  const hostSessionsDir = path.join(hostHomeClaude, 'sessions');
+  if (fs.existsSync(hostSessionsDir)) {
+    mounts.push({
+      hostPath: hostSessionsDir,
+      containerPath: '/home/node/.claude/sessions',
+      readonly: false,
+    });
+  }
+
+  // Also mount host's ~/.claude/session-env/ for session lock files
+  const hostSessionEnvDir = path.join(hostHomeClaude, 'session-env');
+  if (fs.existsSync(hostSessionEnvDir)) {
+    mounts.push({
+      hostPath: hostSessionEnvDir,
+      containerPath: '/home/node/.claude/session-env',
+      readonly: false,
+    });
+  }
+
   mounts.push({
     hostPath: groupSessionsDir,
     containerPath: '/home/node/.claude',
@@ -229,6 +258,15 @@ function buildContainerArgs(
     '-e',
     `ANTHROPIC_BASE_URL=http://${CONTAINER_HOST_GATEWAY}:${CREDENTIAL_PROXY_PORT}`,
   );
+
+  // Pass ComfyUI config to container
+  args.push('-e', `COMFYUI_MODE=${COMFYUI_MODE}`);
+  if (COMFYUI_SERVER) args.push('-e', `COMFYUI_SERVER=${COMFYUI_SERVER}`);
+  args.push('-e', `COMFYUI_HOST_VM=${COMFYUI_HOST_VM}`);
+  args.push('-e', `COMFYUI_INTERNAL=${COMFYUI_INTERNAL}`);
+  if (COMFYUI_EXTERNAL) args.push('-e', `COMFYUI_EXTERNAL=${COMFYUI_EXTERNAL}`);
+  args.push('-e', `COMFYUI_WIDTH=${COMFYUI_WIDTH}`);
+  args.push('-e', `COMFYUI_HEIGHT=${COMFYUI_HEIGHT}`);
 
   // Mirror the host's auth method with a placeholder value.
   // API key mode: SDK sends x-api-key, proxy replaces with real key.
