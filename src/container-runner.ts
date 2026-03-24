@@ -15,6 +15,13 @@ import {
   GROUPS_DIR,
   IDLE_TIMEOUT,
   TIMEZONE,
+  COMFYUI_MODE,
+  COMFYUI_SERVER,
+  COMFYUI_HOST_VM,
+  COMFYUI_INTERNAL,
+  COMFYUI_EXTERNAL,
+  COMFYUI_WIDTH,
+  COMFYUI_HEIGHT,
 } from './config.js';
 import { resolveGroupFolderPath, resolveGroupIpcPath } from './group-folder.js';
 import { logger } from './logger.js';
@@ -229,6 +236,15 @@ function buildContainerArgs(
     '-e',
     `ANTHROPIC_BASE_URL=http://${CONTAINER_HOST_GATEWAY}:${CREDENTIAL_PROXY_PORT}`,
   );
+
+  // Pass ComfyUI config to container
+  args.push('-e', `COMFYUI_MODE=${COMFYUI_MODE}`);
+  if (COMFYUI_SERVER) args.push('-e', `COMFYUI_SERVER=${COMFYUI_SERVER}`);
+  args.push('-e', `COMFYUI_HOST_VM=${COMFYUI_HOST_VM}`);
+  args.push('-e', `COMFYUI_INTERNAL=${COMFYUI_INTERNAL}`);
+  if (COMFYUI_EXTERNAL) args.push('-e', `COMFYUI_EXTERNAL=${COMFYUI_EXTERNAL}`);
+  args.push('-e', `COMFYUI_WIDTH=${COMFYUI_WIDTH}`);
+  args.push('-e', `COMFYUI_HEIGHT=${COMFYUI_HEIGHT}`);
 
   // Mirror the host's auth method with a placeholder value.
   // API key mode: SDK sends x-api-key, proxy replaces with real key.

@@ -1,0 +1,259 @@
+[proxy-preload] WebSocket patched with SOCKS5 proxy
+[proxy-preload] Module._load interception enabled
+[proxy-preload] Proxy configuration complete
+[proxy-preload] Undici patched with HTTP proxy
+[proxy-preload] Undici patched with HTTP proxy
+[STARTUP] Starting main()
+[DEBUG] Container runtime already running
+[STARTUP] Container system checked
+[STARTUP] Database initialized
+Database initialized
+{"groupCount":1}
+[STARTUP] State loaded
+[STARTUP] Remote control restored
+(node:52453) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{"port":3003,"host":"0.0.0.0","authMode":"oauth"}
+{"proxy":"socks5://127.0.0.1:7890"}
+[Discord Debug]: Provided token: MTQ4NTU1MjI5OTY3MjczNTc4NA.GzTQqf.**************************************
+[Discord Debug]: Preparing to connect to the gateway...
+[proxy-preload] WebSocket patched with SOCKS5 proxy
+[proxy-preload] Module._load interception enabled
+[proxy-preload] Proxy configuration complete
+[Discord Debug]: [WS => Manager] Fetched Gateway Information
+	URL: wss://gateway.discord.gg
+	Recommended Shards: 1
+[Discord Debug]: [WS => Manager] Session Limit Information
+	Total: 1000
+	Remaining: 946
+[Discord Debug]: [WS => Shard 0] Connecting to wss://gateway.discord.gg?v=10&encoding=json&compress=zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event hello for 60000ms
+[Discord Debug]: [WS => Shard 0] Preparing first heartbeat of the connection with a jitter of 0.0666529446337667; waiting 2749ms
+[Discord Debug]: [WS => Shard 0] Waiting for identify throttle
+[Discord Debug]: [WS => Shard 0] Identifying
+	shard id: 0
+	shard count: 1
+	intents: 37377
+	compression: zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event ready for 15000ms
+[Discord Raw Event]: READY undefined
+[Discord Raw Event]: GUILD_CREATE undefined
+[Discord Debug]: [WS => Shard 0] Shard received all its guilds. Marking as fully ready.
+{"username":"glmclaw#3453","id":"1485552299672735784"}
+
+  Discord bot: glmclaw#3453
+  Use /chatid command or check channel IDs in Discord settings
+
+[WARN] Telegram: TELEGRAM_BOT_TOKEN not set
+[WARN] {"channel":"telegram"}
+Scheduler loop started
+IPC watcher started (per-group namespaces)
+NanoClaw running (trigger: @glmclaw)
+[Discord Debug]: [WS => Shard 0] First heartbeat sent, starting to beat every 41250ms
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 349ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 295ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 312ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 302ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 301ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 323ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 336ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 360ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 286ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 287ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 339ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：优
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485881198227226627> 生成图片：优雅亚洲女性人像摄影，二十岁出头，少女感， from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+**优化后的提示词：**
+亚洲年 from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 373ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 292ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 286ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 295ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：优
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485881198227226627> 生成图片：优雅亚洲女性人像摄影，二十岁出头，少女感， from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 325ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+📁 图片路径：`/worksp from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 289ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 341ms.
+[Discord Debug]: [WS => Shard 0] Destroying shard
+	Reason: Told to reconnect by Discord
+	Code: 4200
+	Recover: Resume
+[Discord Debug]: [WS => Shard 0] Connection status during destroy
+	Needs closing: true
+	Ready state: 1
+[Discord Debug]: [WS => Shard 0] Connecting to wss://gateway-us-east1-b.discord.gg?v=10&encoding=json&compress=zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event hello for 60000ms
+[Discord Debug]: [WS => Shard 0] Preparing first heartbeat of the connection with a jitter of 0.07869463466336035; waiting 3246ms
+[Discord Debug]: [WS => Shard 0] Resuming session
+	resume url: wss://gateway-us-east1-b.discord.gg
+	sequence: 8
+	shard id: 0
+[Discord Debug]: [WS => Shard 0] Resumed and replayed 1 events
+[Discord Raw Event]: RESUMED undefined
+[Discord Debug]: [WS => Shard 0] First heartbeat sent, starting to beat every 41250ms
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 284ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 341ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 565ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 373ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 299ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 294ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485881198227226627> 生成图片：大长腿，S型曲线，侧光，嘟嘴，旋转，朦胧感 from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+**优化后的提示词：**
+亚洲年 from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 292ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 314ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 357ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 300ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 327ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485881198227226627> 生成图片：大长腿，S型曲线，侧光，嘟嘴，旋转，朦胧感 from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 439ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 fsclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+📁 图片路径：`/worksp from fsclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 376ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Debug]: [WS => Shard 0] The gateway closed with an unexpected code 1006, attempting to resume.
+[Discord Debug]: [WS => Shard 0] Destroying shard
+	Reason: none
+	Code: 1006
+	Recover: Resume
+[Discord Debug]: [WS => Shard 0] Connection status during destroy
+	Needs closing: false
+	Ready state: 3
+[Discord Debug]: [WS => Shard 0] Connecting to wss://gateway-us-east1-b.discord.gg?v=10&encoding=json&compress=zlib-stream
+[Discord Debug]: [WS => Shard 0] Waiting for event hello for 60000ms
+[Discord Debug]: [WS => Shard 0] Preparing first heartbeat of the connection with a jitter of 0.7000225437838152; waiting 28875ms
+[Discord Debug]: [WS => Shard 0] Resuming session
+	resume url: wss://gateway-us-east1-b.discord.gg
+	sequence: 15
+	shard id: 0
+[Discord Debug]: [WS => Shard 0] Resumed and replayed 1 events
+[Discord Raw Event]: RESUMED undefined
+[Discord Debug]: [WS => Shard 0] First heartbeat sent, starting to beat every 41250ms
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 289ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 324ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 388ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 304ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 300ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 337ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 304ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 303ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 296ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 289ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 345ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 299ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 352ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 370ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 381ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 298ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 288ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 279ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485881198227226627> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485881198227226627> 生成图片：大长腿，S型曲线，侧光，嘟嘴，旋转，朦胧感 from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 293ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 279ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 290ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 297ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 291ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 293ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 339ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485251199086104629> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485251199086104629> 生成图片：大长腿，S型曲线，侧光，嘟嘴，旋转，朦胧感 from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 279ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from jmclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+📁 图片路径：`/worksp from jmclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 283ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 285ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 280ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 369ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 571ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 277ms.
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 we2023_ <@&1485251199086104629> 生成图片：大
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@&1485251199086104629> 生成图片：大长腿，S型曲线，侧光，嘟嘴，旋转，朦胧感 from we2023_ in channel 1484747023243677939
+[Discord] Ignoring user message - glmclaw not mentioned and not a DM
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw 🎨 图片已生成！
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: 🎨 图片已生成！ from jmclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Raw MESSAGE_CREATE]: 1484747023243677939 jmclaw <@1075664329174679583> 🎨 图片已生
+[Discord Raw Event]: MESSAGE_CREATE 1484747023243677939
+[Discord] Message received: <@1075664329174679583> 🎨 图片已生成！
+
+📁 图片路径：`/worksp from jmclaw in channel 1484747023243677939
+[Discord] Ignoring bot message - not mentioned
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 277ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 279ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 335ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 278ms.
+[Discord Debug]: [WS => Shard 0] Heartbeat acknowledged, latency of 279ms.

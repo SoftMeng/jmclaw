@@ -11,16 +11,20 @@ import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import path from 'path';
 
-import { ASSISTANT_NAME, TRIGGER_PATTERN } from '../config.js';
+import { ASSISTANT_NAME, TRIGGER_PATTERN, GROUPS_DIR } from '../config.js';
 import { readEnvFile } from '../env.js';
 import { logger } from '../logger.js';
 import { registerChannel, ChannelOpts } from './registry.js';
+import { generatePrompt, presetPrompts } from '../prompts.js';
 import {
   Channel,
   OnChatMetadata,
   OnInboundMessage,
   RegisteredGroup,
 } from '../types.js';
+
+// Configuration: whether to add --optimize flag to prompts
+const ADD_OPTIMIZE = process.env.GLMCLAW_ADD_OPTIMIZE !== 'false';
 
 // Set up proxy if environment variable is set
 async function setupProxy(): Promise<void> {
@@ -116,6 +120,8 @@ export class DiscordChannel implements Channel {
   private client: Client | null = null;
   private opts: DiscordChannelOpts;
   private botToken: string;
+  // Track the user to reply to for each channel (most recent mention)
+  private pendingReplyTo: Map<string, { id: string; name: string }> = new Map();
 
   constructor(botToken: string, opts: DiscordChannelOpts) {
     this.botToken = botToken;
@@ -167,9 +173,88 @@ export class DiscordChannel implements Channel {
         message.channelId,
       );
 
-      // Ignore bot messages (including own)
-      if (message.author.bot) {
-        console.log('[Discord] Ignoring bot message');
+      // Check if bot is mentioned
+      const botId = this.client?.user?.id || '';
+      const isBotMentioned =
+        message.mentions.users.has(botId) ||
+        message.content.includes(`<@${botId}>`) ||
+        message.content.includes(`<@!${botId}>`);
+
+      // Check if this is a DM (no guild)
+      const isDM = message.guild === null;
+
+      // Ignore bot messages (including own) UNLESS the bot is mentioned
+      // Also ignore user messages unless the bot is mentioned or it's a DM
+      if (message.author.bot && !isBotMentioned) {
+        console.log('[Discord] Ignoring bot message - not mentioned');
+        return;
+      }
+
+      // For user messages: only process if glmclaw is mentioned or it's a DM
+      if (!message.author.bot && !isBotMentioned && !isDM) {
+        console.log('[Discord] Ignoring user message - glmclaw not mentioned and not a DM');
+        return;
+      }
+
+      // Store sender info for reply tracking (for @mentioning users in responses)
+      if (!message.author.bot && isBotMentioned) {
+        const senderId = message.author.id;
+        const senderDisplayName =
+          message.member?.displayName ||
+          message.author.displayName ||
+          message.author.username;
+        this.pendingReplyTo.set(message.channelId, { id: senderId, name: senderDisplayName });
+      }
+
+      // Auto-reply: only when "图片已生成" is detected AND glmclaw is mentioned
+      // This creates automatic chain: jmclaw generates image -> mentions glmclaw -> glmclaw generates next prompt
+      const myBotId = this.client?.user?.id || '';
+      if (
+        message.author.bot &&
+        message.author.id !== myBotId &&
+        message.content.includes('图片已生成') &&
+        isBotMentioned  // Only trigger if glmclaw is mentioned
+      ) {
+        console.log('[Discord] Detected "图片已生成" from bot (glmclaw mentioned), generating next prompt...');
+
+        // Extract mentioned users from jmclaw's message (to @ them in our reply)
+        // Discord mentions look like <@USER_ID> or <@!USER_ID>
+        const mentionedUsers: string[] = [];
+        const mentionRegex = /<@!?(\d+)>/g;
+        let match;
+        while ((match = mentionRegex.exec(message.content)) !== null) {
+          const mentionedId = match[1];
+          // Skip if it's glmclaw itself
+          if (mentionedId !== myBotId) {
+            mentionedUsers.push(`<@${mentionedId}>`);
+          }
+        }
+
+        // Generate next prompt - mix of random generation and presets for diversity
+        let nextPrompt: string;
+        if (Math.random() > 0.3) {
+          // 70% chance: use random generation for more variety
+          nextPrompt = generatePrompt(ADD_OPTIMIZE);
+        } else {
+          // 30% chance: use preset prompt
+          nextPrompt = presetPrompts[Math.floor(Math.random() * presetPrompts.length)];
+          // Presets already include --optimize, no need to add again
+        }
+
+        // Build the reply: @mention original users + @jmclaw + prompt
+        const mentionPrefix = mentionedUsers.length > 0 ? `${mentionedUsers.join(' ')} ` : '';
+        const finalPrompt = `${mentionPrefix}@jmclaw#1682 生成图片：${nextPrompt}`;
+
+        // Send the next prompt
+        try {
+          const channel = await this.client!.channels.fetch(message.channelId);
+          if (channel && 'send' in channel) {
+            await (channel as TextChannel).send(finalPrompt);
+            console.log('[Discord] Next prompt sent:', finalPrompt.slice(0, 80));
+          }
+        } catch (err) {
+          console.error('[Discord] Failed to send next prompt:', err);
+        }
         return;
       }
 
@@ -402,11 +487,28 @@ export class DiscordChannel implements Channel {
 
       const textChannel = channel as TextChannel;
 
+      // Get the user to reply to and prepend @mention
+      const replyTo = this.pendingReplyTo.get(channelId);
+      let mentionPrefix = '';
+      if (replyTo) {
+        mentionPrefix = `<@${replyTo.id}> `;
+        // Clean up after sending
+        this.pendingReplyTo.delete(channelId);
+      }
+
       // Check if text contains an image path from the agent
-      const imagePathMatch = text.match(/\/([^\/\s\n]+\.(jpg|png|jpeg))/);
-      const imagePath = imagePathMatch
-        ? `/Users/xiangyuanmeng/Documents/jmclaw/groups/discord_main/images/${imagePathMatch[1]}`
-        : null;
+      // Match /workspace/group/images/xxx.jpg format and convert to host path
+      const imagePathMatch = text.match(/\/workspace\/group\/images\/([^\/\s\n]+\.(?:jpg|png|jpeg))/);
+      let imagePath: string | null = null;
+      if (imagePathMatch) {
+        // Get group folder from registered groups (jid -> folder mapping)
+        const registeredGroups = this.opts.registeredGroups();
+        const registered = registeredGroups[jid];
+        const folder = registered?.folder || null;
+        if (folder) {
+          imagePath = path.join(GROUPS_DIR, folder, 'images', imagePathMatch[1]);
+        }
+      }
 
       if (imagePath && existsSync(imagePath)) {
         console.log('[Discord] Sending image:', imagePath);
@@ -420,11 +522,17 @@ export class DiscordChannel implements Channel {
 
       // Discord has a 2000 character limit per message — split if needed
       const MAX_LENGTH = 2000;
-      if (text.length <= MAX_LENGTH) {
-        await textChannel.send(text);
+      const fullText = mentionPrefix + text;
+      if (fullText.length <= MAX_LENGTH) {
+        await textChannel.send(fullText);
       } else {
-        for (let i = 0; i < text.length; i += MAX_LENGTH) {
-          await textChannel.send(text.slice(i, i + MAX_LENGTH));
+        // If mention prefix causes overflow, skip it
+        if (text.length <= MAX_LENGTH) {
+          await textChannel.send(text);
+        } else {
+          for (let i = 0; i < text.length; i += MAX_LENGTH) {
+            await textChannel.send(text.slice(i, i + MAX_LENGTH));
+          }
         }
       }
       logger.info({ jid, length: text.length }, 'Discord message sent');
@@ -448,7 +556,10 @@ export class DiscordChannel implements Channel {
       }
 
       const authHeader = `Authorization: Bot ${botToken}`;
-      const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json={"content":"🎨 图片已生成！"}' https://discord.com/api/v10/channels/${channelId}/messages`;
+      // Image caption should NOT include mention - mention will be in the follow-up text message
+      const imageMessage = '🎨 图片已生成！';
+      const payloadJson = JSON.stringify({ content: imageMessage });
+      const curlCmd = `curl --socks5 127.0.0.1:7890 -X POST -H "${authHeader}" -F file=@${imagePath} -F 'payload_json=${payloadJson}' https://discord.com/api/v10/channels/${channelId}/messages`;
 
       console.log('[Discord] Uploading image via curl...');
       const result = execSync(curlCmd, {
